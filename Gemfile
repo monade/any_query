@@ -7,7 +7,7 @@ gem 'activerecord'
 gem 'activesupport'
 gem 'dotenv'
 gem 'httparty'
-gem 'mysql2'
+# gem 'mysql2'
 
 gem 'sqlite3'
 
