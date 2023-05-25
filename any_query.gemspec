@@ -4,7 +4,7 @@ $LOAD_PATH.push File.expand_path('lib', __dir__)
 require 'any_query/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'AnyQuery'
+  s.name        = 'any_query'
   s.version     = AnyQuery::VERSION
   s.date        = '2023-04-29'
   s.summary     = 'An ORM for any data source (SQL, CSV, TSV, REST API).'
