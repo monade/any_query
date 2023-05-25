@@ -1,0 +1,18 @@
+AllCops:
+  TargetRubyVersion: 3.2.1
+  Exclude:
+    - "db/schema.rb"
+    - "bin/**/*"
+    - "Guardfile"
+    - "spec/support/*.rb"
+    - "vendor/**/*"
+
+require:
+  - rubocop-performance
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+
+Metrics/ClassLength:
+  Max: 200
