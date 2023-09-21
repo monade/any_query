@@ -3,6 +3,7 @@
 module AnyQuery
   module Adapters
     # @api private
+    # @abstract
     class Base
       def initialize(config)
         @config = config.to_h
@@ -149,8 +150,11 @@ module AnyQuery
 
       # @abstract
       class Config
-        def initialize(&block)
-          instance_eval(&block)
+        def initialize(params = {}, &block)
+          params.each do |key, value|
+            send(key, value) if respond_to?(key)
+          end
+          instance_eval(&block) if block_given?
         end
 
         def url(url)

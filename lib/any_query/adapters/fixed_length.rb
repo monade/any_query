@@ -20,11 +20,11 @@ module AnyQuery
         @file = File.open(url)
       end
 
-      def parse_fields(model)
+      def parse_fields(fields)
         @file.each_line.map do |line|
           result = {}
           last_index = 0
-          model.fields.each do |name, field|
+          fields.each do |name, field|
             raw_value = line[last_index...(last_index + field[:length])]
             result[name] = parse_field(field, raw_value)
             last_index += field[:length]
@@ -40,7 +40,7 @@ module AnyQuery
       def load(model, select:, joins:, where:, limit:)
         @file.rewind
 
-        chain = parse_fields(model)
+        chain = parse_fields(model.fields)
         chain = fallback_where(chain, where) if where.present?
         chain = chain.first(limit) if limit.present?
         chain = resolve_joins(chain, joins) if joins.present?

@@ -7,6 +7,13 @@ module AnyQuery
       MAX_ITERATIONS = 1000
       # @api private
       class Config < Base::Config
+        def initialize(params = {}, &block)
+          super
+          params[:endpoints]&.each do |endpoint_params|
+            endpoint(endpoint_params[:scope], endpoint_params[:method], endpoint_params[:path], endpoint_params)
+          end
+        end
+
         def endpoint(name, method, path, options = {})
           @endpoints ||= {}
           @endpoints[name] = { method:, path:, options: }
@@ -49,8 +56,8 @@ module AnyQuery
       end
 
       # FIXME: Use common method
-      def load_single_from_list(data)
-        data.each_slice(50).flat_map do |slice|
+      def load_single_from_list(result_list)
+        result_list.each_slice(50).flat_map do |slice|
           slice
             .map { |data| Thread.new { run_http_single_query(data[:id], {}) } }
             .each(&:join)
@@ -120,7 +127,7 @@ module AnyQuery
       end
 
       def merge_params(endpoint, params, iteration, previous_response)
-        (endpoint[:options][:default_params] || {})
+        (endpoint.dig(:options, :default_params) || {})
           .deep_merge(params)
           .deep_merge(handle_pagination(endpoint, iteration, previous_response))
       end
@@ -147,7 +154,7 @@ module AnyQuery
       end
 
       def unwrap_list(endpoint, data)
-        wrapper = endpoint[:options][:wrapper]
+        wrapper = endpoint.dig(:options, :wrapper)
         return data unless wrapper
 
         if wrapper.is_a?(Proc)
@@ -158,7 +165,7 @@ module AnyQuery
       end
 
       def unwrap_single(endpoint, data)
-        return data unless endpoint[:options][:single_wrapper]
+        return data unless endpoint.dig(:options, :single_wrapper)
 
         data.map! do |row|
           row.dig(*endpoint[:options][:single_wrapper])

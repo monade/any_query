@@ -25,7 +25,7 @@ module AnyQuery
         @rails_model = declare_model!
         @rails_model.table_name = table_name
         @rails_model.inheritance_column = :_sti_disabled
-        Object.const_set("AnyQuery#{table_name.classify}", @rails_model)
+        Object.const_set("AnyQuery#{table_name.classify}_#{SecureRandom.alphanumeric(4)}", @rails_model)
       end
 
       def declare_model!

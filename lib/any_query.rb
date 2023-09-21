@@ -13,6 +13,7 @@ module AnyQuery
   autoload :Config
   autoload :Adapters
   autoload :Query
+  autoload :Client
 
   included do
     delegate_missing_to :@attributes

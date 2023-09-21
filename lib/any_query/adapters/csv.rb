@@ -15,10 +15,10 @@ module AnyQuery
         end
       end
 
-      def parse_fields(model)
+      def parse_fields(fields)
         CSV.foreach(url, headers: true).map do |line|
           result = {}
-          model.fields.each do |name, field|
+          fields.each do |name, field|
             result[name] = parse_field(field, line[field[:source] || name.to_s])
           end
           result
@@ -30,7 +30,7 @@ module AnyQuery
       end
 
       def load(model, select:, joins:, where:, limit:)
-        chain = parse_fields(model)
+        chain = parse_fields(model.fields)
         chain = fallback_where(chain, where) if where.present?
         chain = chain.first(limit) if limit.present?
         chain = resolve_joins(chain, joins) if joins.present?
