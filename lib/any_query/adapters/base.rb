@@ -18,6 +18,8 @@ module AnyQuery
       end
 
       def instantiate_model(model, record)
+        return record unless record.is_a?(Hash)
+
         instance = model.new
         attrs = instance.instance_variable_get(:@attributes)
         record.each do |key, value|
