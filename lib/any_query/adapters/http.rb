@@ -177,10 +177,16 @@ module AnyQuery
 
         raise response.inspect unless response.success?
 
-        if response.parsed_response.is_a?(Array)
-          response.parsed_response.map(&:deep_symbolize_keys)
+        symbolize_keys(response.parsed_response)
+      end
+
+      def symbolize_keys(response)
+        if response.is_a?(Array)
+          response.map do |item|
+            symbolize_keys(item)
+          end
         else
-          response.parsed_response&.deep_symbolize_keys
+          response.respond_to?(:deep_symbolize_keys) ? response&.deep_symbolize_keys : response
         end
       end
 
